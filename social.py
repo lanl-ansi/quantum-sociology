@@ -18,24 +18,29 @@ class Network(object):
     def J(self):
         return self.j
 
-    def solve(self, solver, s=0.5, discard=True, **kws):
+    def solve(self, solver, s=0.5, discard=True, verbose=0, **kws):
+        kws['verbose'] = verbose
         A = util.get_hardware_adjacency(solver)
         emb = embedding.find_embedding(self.j, A, **kws)
-        print 'embedding:', emb
+        if verbose:
+            print 'embedding:', emb
 
         h = []
         (h0, j0, jc, new_emb) = embedding.embed_problem(h, self.j, emb, A)
-        #print "h0:", h0
-        print "j0:", j0
-        print "jc:", jc
-        print "new embedding:", new_emb
+        if verbose:
+            print "h0:", h0
+            print "j0:", j0
+            print "jc:", jc
+            print "new embedding:", new_emb
 
         emb_j = {t: s*j0[t] for t in j0}
         emb_j.update(jc)
-        print "new j (s scaled):", emb_j
+        if verbose:
+            print "new j (s scaled):", emb_j
 
         ans = core.solve_ising(solver, h0, emb_j, num_reads=1000)
-        #print ans
+        if verbose:
+            print ans
 
         if discard:
             res = embedding.unembed_answer(ans['solutions'], new_emb, 'discard', h, self.j)

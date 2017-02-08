@@ -19,8 +19,8 @@ else:
 res = net.solve(solver, discard=True, verbose=0)
 
 print
-print 'J:', net.J()
+print 'net.J:', net.J()
 print
-print 'results:'
+print 'res.results:'
 for r in res.results():
     print r
