@@ -1,6 +1,7 @@
 import social
 import dwave_sapi2.local as local
 import dwave_sapi2.remote as remote
+import os
 
 A = 0
 B = 1
@@ -51,7 +52,8 @@ if True:
     conn = local.local_connection
     solver = conn.get_solver("c4-sw_sample")
 else:
-    conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-2690b414a0be9fc9af1d82d00bfe1ef23936c99e')
+    token = os.environ['DWAVE_TOKEN']
+    conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
     solver = conn.get_solver("DW2X")
 
 net = fig1A4()
