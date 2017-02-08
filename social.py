@@ -47,15 +47,17 @@ class Network(object):
 class Solution(object):
     def __init__(self, ans, res, j):
         self.ans = ans
-        self.j = j
-        self.res = [ {'energy': e, 'sJs:': self.sJs(s), 'spins': s, 'num_occ': n}
+        self.res = [ {'energy': e, 'sJs:': self.__sJs__(s, j), 'spins': s, 'num_occ': n}
                      for (e,s,n) in zip(ans['energies'],res, ans['num_occurrences']) ]
 
-    def sJs(self, s):
+    def __sJs__(self, s, j):
         sum = 0
-        for jj in self.j:
-            sum += self.j[jj]*s[jj[0]]*s[jj[1]]
+        for nodes in j:
+            sum += j[nodes]*s[nodes[0]]*s[nodes[1]]
         return sum
 
     def results(self):
         return self.res
+
+    def rawResults(self):
+        return self.ans
