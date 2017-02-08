@@ -5,14 +5,15 @@ import dwave_sapi2.util as util
 import dwave_sapi2.embedding as embedding
 import numpy as np
 
+
 #conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-2690b414a0be9fc9af1d82d00bfe1ef23936c99e')
 #solver = conn.get_solver("DW2X")
 
 conn = local.local_connection
 solver = conn.get_solver("c4-sw_sample")
 
-#A = util.get_hardware_adjacency(solver)
-A = util.get_chimera_adjacency(1,1,4)
+A = util.get_hardware_adjacency(solver)
+#A = util.get_chimera_adjacency(1,1,4)
 
 S_size = 3
 S = {}
