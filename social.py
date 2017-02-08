@@ -53,7 +53,7 @@ class Solution(object):
     def __init__(self, ans, res, j):
         self.ans = ans
         self.res = [ {'energy': e, 'sJs:': self.__sJs__(s, j), 'spins': s, 'num_occ': n}
-                     for (e,s,n) in zip(ans['energies'],res, ans['num_occurrences']) ]
+                     for (e,s,n) in zip(ans['energies'], res, ans['num_occurrences']) ]
 
     def __sJs__(self, s, j):
         sum = 0
