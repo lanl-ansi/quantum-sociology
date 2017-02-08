@@ -62,13 +62,13 @@ class Network(object):
             print "new embedding:", new_emb
 
         # scale the network edge weights, j0,  by s before adding the chain weights, jc.
-        jEmbeding = {t: s*j0[t] for t in j0}
-        jEmbeding.update(jc)
+        j_emb = {t: s*j0[t] for t in j0}
+        j_emb.update(jc)
         if verbose:
-            print "new j (s scaled):", jEmbeding
+            print "new j (s scaled):", j_emb
 
         # solve the embedded Ising model
-        ans = core.solve_ising(solver, h0, jEmbeding, num_reads=1000)
+        ans = core.solve_ising(solver, h0, j_emb, num_reads=1000)
         if verbose:
             print ans
 
