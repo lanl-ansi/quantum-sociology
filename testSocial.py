@@ -11,9 +11,9 @@ E = 4
 
 def fig1A4():
     net = social.Network()
-    net.enemy(0,1)
-    net.friend(0,2)
-    net.enemy(1,2)
+    net.enemy(A,B)
+    net.friend(A,C)
+    net.enemy(B,C)
     return net
 
 def fig1B():
