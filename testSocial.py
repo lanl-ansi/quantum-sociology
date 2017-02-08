@@ -2,19 +2,21 @@ import social
 import dwave_sapi2.local as local
 import dwave_sapi2.remote as remote
 
-net = social.Network()
-
 A = 0
 B = 1
 C = 2
 D = 3
 E = 4
 
-if False:
+def fig1A4():
+    net = social.Network()
     net.enemy(0,1)
     net.friend(0,2)
     net.enemy(1,2)
-else:
+    return net
+
+def fig1B():
+    net = social.Network()
     net.enemy(A,B)
     net.enemy(B,C)
     net.friend(C,D)
@@ -22,8 +24,28 @@ else:
     net.enemy(E,A)
     net.enemy(A,D)
     net.friend(B,E)
+    return net
 
-#print net.__dict__
+def fig1C():
+    net = social.Network()
+    net.friend(A,B)
+    net.enemy(B,C)
+    net.friend(C,D)
+    net.friend(D,E)
+    net.friend(E,A)
+    net.friend(A,D)
+    net.friend(B,E)
+    return net
+
+def solve(net):
+    res = net.solve(solver, discard=True, verbose=0)
+
+    print
+    print 'net.J:', net.J()
+    print 'res.results:'
+    for r in res.results():
+        print ' ', r
+
 
 if True:
     conn = local.local_connection
@@ -32,11 +54,11 @@ else:
     conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-2690b414a0be9fc9af1d82d00bfe1ef23936c99e')
     solver = conn.get_solver("DW2X")
 
-res = net.solve(solver, discard=True, verbose=1)
+net = fig1A4()
+solve(net)
 
-print
-print 'net.J:', net.J()
-print
-print 'res.results:'
-for r in res.results():
-    print r
+net = fig1B()
+solve(net)
+
+net = fig1C()
+solve(net)
