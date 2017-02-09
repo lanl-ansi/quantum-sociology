@@ -30,7 +30,7 @@ class Network(object):
         """ Return the edge weights of the social network. """
         return self.j
 
-    def solve(self, solver, s=0.5, discard=True, verbose=0, num_reads=1000):
+    def solve(self, solver, s=0.5, verbose=0, num_reads=1000):
         """ solve the social network as an Ising model
 
         Args:
@@ -69,18 +69,32 @@ class Network(object):
             print ans
 
         # convert the solution back into the original, un-embedded, problem
-        if discard:
-            res = embedding.unembed_answer(ans['solutions'], new_emb, 'discard', h, self.j)
-        else:
-            res = embedding.unembed_answer(ans['solutions'], new_emb, 'minimize_energy', h, self.j)
+        res, broken = self.__unembedSolution(ans['solutions'], new_emb)
 
         # pack it up into a solution object that does a bit of post-processing on the solution
-        return Solution(ans, res, self.j)
+        return Solution(ans, res, broken, self.j)
 
     def __setEdgeWeight(self, n1, n2, w):
         self.maxNode = max(self.maxNode, n1, n2)
         edg = (min(n1,n2), max(n1,n2))
         self.j[edg] = w
+
+    def __unembedSolution(self, sols, emb):
+        reses = []
+        broken = []
+        for sol in sols:
+            res = []
+            broke = False
+            for chain in emb:
+                # find all the mappings from physical nodes to this logical node
+                resVals = [sol[c] for c in chain]
+                # Are any of the chains in this solution broken? (physical node values unequal?)
+                broke |= resVals.count(resVals[0]) != len(resVals)
+                # append the value solution using the first element of the logical values
+                res.append(resVals[0])
+            broken.append(broke)
+            reses.append(res)
+        return reses, broken
 
 class Solution(object):
     """ Solution is used to package up and post-process the results from the Ising model calculation.
@@ -90,11 +104,12 @@ class Solution(object):
     The 'delta' term is the global balance of the network as calculated in [2] of Fracchetti, et.al.
 
     """
-    def __init__(self, ans, res, j):
+    def __init__(self, ans, res, broken, j):
         self.ans = ans
         self.j = j
-        self.res = [ {'energy': e, 'sJs:': self.__sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self.__delta(s, j)}
-                     for (e,s,n) in zip(ans['energies'], res, ans['num_occurrences']) ]
+        self.res = [ {'energy': e, 'sJs:': self.__sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self.__delta(s, j),
+                      'broken': b}
+                     for e, s, n, b in zip(ans['energies'], res, ans['num_occurrences'], broken) ]
 
     def results(self):
         return self.res

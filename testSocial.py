@@ -39,7 +39,7 @@ def fig1C():
     return net
 
 def solve(net):
-    res = net.solve(solver, num_reads=100, discard=True, verbose=0)
+    res = net.solve(solver, s=.5, num_reads=1000, verbose=0)
 
     print
     print 'net.J:', net.J()
