@@ -18,15 +18,13 @@ class Network(object):
 
     def friend(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be a friend. """
-        self.maxNode = max(self.maxNode, n1, n2)
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self.j[(n1,n2)] = -1
+        self.__setEdgeWeight(n1, n2, -1)
 
     def enemy(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be an enemy. """
-        self.maxNode = max(self.maxNode, n1, n2)
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self.j[(n1,n2)] = 1
+        self.__setEdgeWeight(n1, n2, 1)
 
     def J(self):
         """ Return the edge weights of the social network. """
@@ -81,6 +79,11 @@ class Network(object):
         # pack it up into a solution object that does a bit of post-processing on the solution
         return Solution(ans, res, self.j)
 
+    def __setEdgeWeight(self, n1, n2, w):
+        self.maxNode = max(self.maxNode, n1, n2)
+        edg = (min(n1,n2), max(n1,n2))
+        self.j[edg] = w
+
 class Solution(object):
     """ Solution is used to package up and post-process the results from the Ising model calculation.
 
@@ -92,7 +95,7 @@ class Solution(object):
     def __init__(self, ans, res, j):
         self.ans = ans
         self.j = j
-        self.res = [ {'energy': e, 'sJs:': self.__sJs__(s, j), 'spins': s, 'num_occ': n, 'delta': self.__delta__(s, j)}
+        self.res = [ {'energy': e, 'sJs:': self.__sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self.__delta(s, j)}
                      for (e,s,n) in zip(ans['energies'], res, ans['num_occurrences']) ]
 
     def results(self):
@@ -101,14 +104,14 @@ class Solution(object):
     def rawResults(self):
         return self.ans
 
-    def __delta__(self, s, j):
-        sjs = self.__sJs__(s, j)
+    def __delta(self, s, j):
+        sjs = self.__sJs(s, j)
         m = len(j)
         # the plus sign is due to Fracchetti et.al. minimizing -s^Js, while we change the sign of J and minimize s^Js
         # also, I think m is defined incorrectly in Fracchetti et.al.
         return .5 * (m + sjs)
 
-    def __sJs__(self, s, j):
+    def __sJs(self, s, j):
         sum = 0
         for nodes in j:
             sum += j[nodes] * s[nodes[0]] * s[nodes[1]]
