@@ -6,7 +6,7 @@ import dwave_sapi2.embedding as embedding
 import numpy as np
 
 
-#conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-2690b414a0be9fc9af1d82d00bfe1ef23936c99e')
+#conn = remote.RemoteConnection('https://localhost:10443/sapi', 'TOKEN')
 #solver = conn.get_solver("DW2X")
 
 conn = local.local_connection
