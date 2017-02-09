@@ -30,7 +30,7 @@ class Network(object):
         """ Return the edge weights of the social network. """
         return self.j
 
-    def solve(self, solver, s=0.5, discard=True, verbose=0, **kws):
+    def solve(self, solver, s=0.5, discard=True, verbose=0, num_reads=1000):
         """ solve the social network as an Ising model
 
         Args:
@@ -41,11 +41,9 @@ class Network(object):
             **kws: the other keywords are passed to the find_embedding method
         """
 
-        kws['verbose'] = verbose
-
         # have D-Wave find an embedding of our network into the Chimera
         A = util.get_hardware_adjacency(solver)
-        emb = embedding.find_embedding(self.j, A, **kws)
+        emb = embedding.find_embedding(self.j, A, verbose=verbose)
         if verbose:
             print 'embedding:', emb
 
@@ -66,7 +64,7 @@ class Network(object):
             print "new j (s scaled):", j_emb
 
         # solve the embedded Ising model
-        ans = core.solve_ising(solver, h0, j_emb, num_reads=1000)
+        ans = core.solve_ising(solver, h0, j_emb, num_reads=num_reads)
         if verbose:
             print ans
 
