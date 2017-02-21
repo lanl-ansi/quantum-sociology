@@ -66,10 +66,15 @@ solve(net, emb)
 net.friend(A,B)
 solve(net, emb, verbose=0)
 
+# change the network values without changing the topology,
+# and therefore the embedding
+net.friend(B,C)
+solve(net, emb, verbose=0)
+
 net = fig1B()
 emb = social.Embedding(solver, net, verbose=0)
 solve(net, emb)
 
 net = fig1C()
-emb = social.Embedding(solver, net, verbose=0)
+# using same topology as figure 1B
 solve(net, emb)
