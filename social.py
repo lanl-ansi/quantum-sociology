@@ -12,7 +12,7 @@ class Network(object):
     """
     def __init__(self):
         # maxNode is the highest referenced node number.  Nodes assumed to be numbered from 0 to maxNode.
-        self.maxNode = 0
+        self._max_node = 0
         # j is the dictionary of edge weights, with (node1, node2) being the key to the dictionary
         self.j = {}
 
@@ -75,7 +75,7 @@ class Network(object):
         return Solution(ans, res, broken, self.j)
 
     def _set_edge_weight(self, n1, n2, w):
-        self.maxNode = max(self.maxNode, n1, n2)
+        self._max_node = max(self._max_node, n1, n2)
         edg = (min(n1,n2), max(n1,n2))
         self.j[edg] = w
 
@@ -87,11 +87,11 @@ class Network(object):
             broke = False
             for chain in emb:
                 # find all the mappings from physical nodes to this logical node
-                resVals = [sol[c] for c in chain]
+                res_vals = [sol[c] for c in chain]
                 # Are any of the chains in this solution broken? (physical node values unequal?)
-                broke |= resVals.count(resVals[0]) != len(resVals)
+                broke |= res_vals.count(res_vals[0]) != len(res_vals)
                 # append the value solution using the first element of the logical values
-                res.append(resVals[0])
+                res.append(res_vals[0])
             broken.append(broke)
             reses.append(res)
         return reses, broken
@@ -105,17 +105,17 @@ class Solution(object):
 
     """
     def __init__(self, ans, res, broken, j):
-        self.ans = ans
-        self.j = j
-        self.res = [ {'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
+        self._ans = ans
+        self._j = j
+        self._res = [{'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
                       'broken': b}
-                     for e, s, n, b in zip(ans['energies'], res, ans['num_occurrences'], broken) ]
+                     for e, s, n, b in zip(ans['energies'], res, ans['num_occurrences'], broken)]
 
     def results(self):
-        return self.res
+        return self._res
 
     def raw_results(self):
-        return self.ans
+        return self._ans
 
     def _delta(self, s, j):
         sjs = self._sJs(s, j)
