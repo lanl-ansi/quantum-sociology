@@ -11,12 +11,45 @@ def _all_equal(vals):
     """ Returns True if all values are equal """
     return vals.count(vals[0]) == len(vals)
 
+def _sJs(s, j):
+    sum = 0
+    for nodes in j:
+        sum += j[nodes] * s[nodes[0]] * s[nodes[1]]
+    return sum
+
+def _delta(s, j):
+    sjs = _sJs(s, j)
+    m = len(j)
+    # the plus sign is due to Fracchetti et.al. minimizing -s^Js, while we change the sign of j and minimize s^Js
+    # also, I think m is defined incorrectly in Fracchetti et.al.
+    return .5 * (m + sjs)
+
+class Ising(object):
+    def __init__(self, h0, j_emb, new_emb, j):
+        self._h0 = h0
+        self._j_emb = j_emb
+        self._new_emb = new_emb
+        self._j = j
+
+    def new_emb(self):
+        return self._new_emb
+
+    def j(self):
+        return self._j
+
+    def solve(self, solver, num_reads, verbose=0):
+        # solve the embedded Ising model
+        embedded_results = core.solve_ising(solver, self._h0, self._j_emb, num_reads=num_reads)
+        if verbose:
+            print embedded_results
+        return embedded_results
+
 class Embedding(object):
     def __init__(self, solver, network, verbose=0):
         self._verbose = verbose
         # have D-Wave find an embedding of our network into the Chimera
         self._A = util.get_hardware_adjacency(solver)
-        self._emb = embedding.find_embedding(network.J(), self._A, verbose=verbose)
+        self._emb = embedding.find_embedding(network.j(), self._A, verbose=verbose)
         if verbose:
             print 'embedding:', self._emb
 
@@ -38,15 +71,15 @@ class Embedding(object):
         if self._verbose:
             print "new j (s scaled):", j_emb
 
-        return h0, j_emb, new_emb
+        return Ising(h0, j_emb, new_emb, j)
 
-    def unembed_solution(self, embedded_results, new_emb, net):
+    def unembed_solution(self, embedded_results, ising):
         unembedded_results = []
         broken = []
         for sol in embedded_results['solutions']:
             emb_sol = []
             broke = False
-            for chain in new_emb:
+            for chain in ising.new_emb():
                 # find all the mappings from physical nodes to this logical node
                 chain_vals = [sol[c] for c in chain]
                 # Are any of the chains in this solution broken? (All chain values should be the same.)
@@ -58,7 +91,7 @@ class Embedding(object):
             unembedded_results.append(emb_sol)
 
          # pack it up into a solution object that does a bit of post-processing on the solution
-        return Solution(embedded_results, unembedded_results, broken, net.J())
+        return Solution(embedded_results, unembedded_results, broken, ising)
 
 
 class Network(object):
@@ -80,7 +113,7 @@ class Network(object):
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
         self._set_edge_weight(n1, n2, 1)
 
-    def J(self):
+    def j(self):
         """ Return the edge weights of the social network. """
         return self._j
 
@@ -92,19 +125,18 @@ class Network(object):
             s: scale the network weights by s before adding chain weights.
             discard: True to ignore solutions that violate chain constraints
             verbose: 0 or 1
-            **kws: the other keywords are passed to the find_embedding method
         """
 
         # embed the problem into the D-Wave architecture
-        (h0, j_emb, new_emb) = emb.embed_problem(s, self._j)
+        ising = emb.embed_problem(s, self._j)
 
         # solve the embedded Ising model
-        embedded_results = core.solve_ising(solver, h0, j_emb, num_reads=num_reads)
+        embedded_results = ising.solve(solver, num_reads=num_reads)
         if verbose:
             print embedded_results
 
         # convert the solution back into the original, un-embedded, problem
-        return emb.unembed_solution(embedded_results, new_emb, self)
+        return emb.unembed_solution(embedded_results, ising)
 
 
     def _set_edge_weight(self, n1, n2, w):
@@ -120,11 +152,11 @@ class Solution(object):
     The 'delta' term is the global balance of the network as calculated in [2] of Fracchetti, et.al.
 
     """
-    def __init__(self, orig_results, unembedded_results, broken, j):
+    def __init__(self, orig_results, unembedded_results, broken, ising):
         self._orig_results = orig_results
-        self._j = j
-        self._results = [{'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
-                      'broken': b}
+        j = ising.j()
+        self._results = [{'energy': e, 'sJs:': _sJs(s, j), 'spins': s, 'num_occ': n,
+                          'delta': _delta(s, j), 'broken': b}
                          for e, s, n, b in zip(orig_results['energies'], unembedded_results,
                                                orig_results['num_occurrences'], broken)]
 
@@ -133,17 +165,3 @@ class Solution(object):
 
     def raw_results(self):
         return self._orig_results
-
-    def _delta(self, s, j):
-        sjs = self._sJs(s, j)
-        m = len(j)
-        # the plus sign is due to Fracchetti et.al. minimizing -s^Js, while we change the sign of J and minimize s^Js
-        # also, I think m is defined incorrectly in Fracchetti et.al.
-        return .5 * (m + sjs)
-
-    def _sJs(self, s, j):
-        sum = 0
-        for nodes in j:
-            sum += j[nodes] * s[nodes[0]] * s[nodes[1]]
-        return sum
-

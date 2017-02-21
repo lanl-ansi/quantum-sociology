@@ -42,7 +42,7 @@ def solve(net, emb):
     res = net.solve(solver, emb, s=.5, num_reads=1000, verbose=0)
 
     print
-    print 'net.J:', net.J()
+    print 'net.j:', net.j()
     print 'res.results:'
     for r in res.results():
         print ' ', r
