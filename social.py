@@ -7,6 +7,60 @@ import dwave_sapi2.util as util
 import dwave_sapi2.embedding as embedding
 import dwave_sapi2.core as core
 
+def _all_equal(vals):
+    """ Returns True if all values are equal """
+    return vals.count(vals[0]) == len(vals)
+
+class Embedding(object):
+    def __init__(self, solver, network, verbose=0):
+        self._verbose = verbose
+        # have D-Wave find an embedding of our network into the Chimera
+        self._A = util.get_hardware_adjacency(solver)
+        self._emb = embedding.find_embedding(network.J(), self._A, verbose=verbose)
+        if verbose:
+            print 'embedding:', self._emb
+
+    def embed_problem(self, s, j):
+        """ Use the new embedding to set up a new Ising model that we will
+            actually send to the solver
+        """
+        h = []
+        (h0, j0, jc, new_emb) = embedding.embed_problem(h, j, self._emb, self._A)
+        if self._verbose:
+            print "h0:", h0
+            print "j0:", j0
+            print "jc:", jc
+            print "new embedding:", new_emb
+
+        # scale the network edge weights, j0,  by s before adding the chain weights, jc.
+        j_emb = {t: s*j0[t] for t in j0}
+        j_emb.update(jc)
+        if self._verbose:
+            print "new j (s scaled):", j_emb
+
+        return h0, j_emb, new_emb
+
+    def unembed_solution(self, embedded_results, new_emb, net):
+        unembedded_results = []
+        broken = []
+        for sol in embedded_results['solutions']:
+            emb_sol = []
+            broke = False
+            for chain in new_emb:
+                # find all the mappings from physical nodes to this logical node
+                chain_vals = [sol[c] for c in chain]
+                # Are any of the chains in this solution broken? (All chain values should be the same.)
+                _chain_all_equals = _all_equal(chain_vals)
+                broke |= not _chain_all_equals
+                # append the value solution using the first element of the logical values
+                emb_sol.append(chain_vals[0] if _chain_all_equals else 0)
+            broken.append(broke)
+            unembedded_results.append(emb_sol)
+
+         # pack it up into a solution object that does a bit of post-processing on the solution
+        return Solution(embedded_results, unembedded_results, broken, net.J())
+
+
 class Network(object):
     """ Network is used to setup the social network as described in Facchetti, et. al.
     """
@@ -14,7 +68,7 @@ class Network(object):
         # maxNode is the highest referenced node number.  Nodes assumed to be numbered from 0 to maxNode.
         self._max_node = 0
         # j is the dictionary of edge weights, with (node1, node2) being the key to the dictionary
-        self.j = {}
+        self._j = {}
 
     def friend(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be a friend. """
@@ -28,9 +82,9 @@ class Network(object):
 
     def J(self):
         """ Return the edge weights of the social network. """
-        return self.j
+        return self._j
 
-    def solve(self, solver, s=0.5, verbose=0, num_reads=1000):
+    def solve(self, solver, emb, s=0.5, verbose=0, num_reads=1000):
         """ solve the social network as an Ising model
 
         Args:
@@ -41,67 +95,22 @@ class Network(object):
             **kws: the other keywords are passed to the find_embedding method
         """
 
-        # have D-Wave find an embedding of our network into the Chimera
-        A = util.get_hardware_adjacency(solver)
-        emb = embedding.find_embedding(self.j, A, verbose=verbose)
-        if verbose:
-            print 'embedding:', emb
-
-        # use the new embedding to set up a new Ising model that we will
-        # actually send to the solver
-        h = []
-        (h0, j0, jc, new_emb) = embedding.embed_problem(h, self.j, emb, A)
-        if verbose:
-            print "h0:", h0
-            print "j0:", j0
-            print "jc:", jc
-            print "new embedding:", new_emb
-
-        # scale the network edge weights, j0,  by s before adding the chain weights, jc.
-        j_emb = {t: s*j0[t] for t in j0}
-        j_emb.update(jc)
-        if verbose:
-            print "new j (s scaled):", j_emb
+        # embed the problem into the D-Wave architecture
+        (h0, j_emb, new_emb) = emb.embed_problem(s, self._j)
 
         # solve the embedded Ising model
-        ans = core.solve_ising(solver, h0, j_emb, num_reads=num_reads)
+        embedded_results = core.solve_ising(solver, h0, j_emb, num_reads=num_reads)
         if verbose:
-            print ans
+            print embedded_results
 
         # convert the solution back into the original, un-embedded, problem
-        res, broken = self._unembed_solution(ans['solutions'], new_emb)
+        return emb.unembed_solution(embedded_results, new_emb, self)
 
-        # pack it up into a solution object that does a bit of post-processing on the solution
-        return Solution(ans, res, broken, self.j)
 
     def _set_edge_weight(self, n1, n2, w):
         self._max_node = max(self._max_node, n1, n2)
         edg = (min(n1,n2), max(n1,n2))
-        self.j[edg] = w
-
-    def _unembed_solution(self, sols, emb):
-        reses = []
-        broken = []
-        for sol in sols:
-            res = []
-            broke = False
-            for chain in emb:
-                # find all the mappings from physical nodes to this logical node
-                res_vals = [sol[c] for c in chain]
-                # Are any of the chains in this solution broken? (All chain values should be the same.)
-                _chain_all_equals = _all_equal(res_vals)
-                broke |= not _chain_all_equals
-                # append the value solution using the first element of the logical values
-                res.append(res_vals[0] if _chain_all_equals else 2)
-            broken.append(broke)
-            reses.append(res)
-        return reses, broken
-
-
-def _all_equal(vals):
-    """ Returns True if all values are equal """
-    return vals.count(vals[0]) == len(vals)
-
+        self._j[edg] = w
 
 class Solution(object):
     """ Solution is used to package up and post-process the results from the Ising model calculation.
@@ -111,18 +120,19 @@ class Solution(object):
     The 'delta' term is the global balance of the network as calculated in [2] of Fracchetti, et.al.
 
     """
-    def __init__(self, ans, res, broken, j):
-        self._ans = ans
+    def __init__(self, orig_results, unembedded_results, broken, j):
+        self._orig_results = orig_results
         self._j = j
-        self._res = [{'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
+        self._results = [{'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
                       'broken': b}
-                     for e, s, n, b in zip(ans['energies'], res, ans['num_occurrences'], broken)]
+                         for e, s, n, b in zip(orig_results['energies'], unembedded_results,
+                                               orig_results['num_occurrences'], broken)]
 
     def results(self):
-        return self._res
+        return self._results
 
     def raw_results(self):
-        return self._ans
+        return self._orig_results
 
     def _delta(self, s, j):
         sjs = self._sJs(s, j)

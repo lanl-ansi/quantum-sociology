@@ -38,8 +38,8 @@ def fig1C():
     net.friend(B,E)
     return net
 
-def solve(net):
-    res = net.solve(solver, s=.5, num_reads=1000, verbose=0)
+def solve(net, emb):
+    res = net.solve(solver, emb, s=.5, num_reads=1000, verbose=0)
 
     print
     print 'net.J:', net.J()
@@ -57,10 +57,18 @@ else:
     solver = conn.get_solver("DW2X")
 
 net = fig1A4()
-solve(net)
+emb = social.Embedding(solver, net, verbose=0)
+solve(net, emb)
+
+# change the network values without changing the topology,
+# and therefore the embedding
+net.friend(A,B)
+solve(net, emb)
 
 net = fig1B()
-solve(net)
+emb = social.Embedding(solver, net, verbose=0)
+solve(net, emb)
 
 net = fig1C()
-solve(net)
+emb = social.Embedding(solver, net, verbose=0)
+solve(net, emb)
