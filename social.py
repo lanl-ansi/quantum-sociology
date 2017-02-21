@@ -88,13 +88,20 @@ class Network(object):
             for chain in emb:
                 # find all the mappings from physical nodes to this logical node
                 res_vals = [sol[c] for c in chain]
-                # Are any of the chains in this solution broken? (physical node values unequal?)
-                broke |= res_vals.count(res_vals[0]) != len(res_vals)
+                # Are any of the chains in this solution broken? (All chain values should be the same.)
+                _chain_all_equals = _all_equal(res_vals)
+                broke |= not _chain_all_equals
                 # append the value solution using the first element of the logical values
-                res.append(res_vals[0])
+                res.append(res_vals[0] if _chain_all_equals else 2)
             broken.append(broke)
             reses.append(res)
         return reses, broken
+
+
+def _all_equal(vals):
+    """ Returns True if all values are equal """
+    return vals.count(vals[0]) == len(vals)
+
 
 class Solution(object):
     """ Solution is used to package up and post-process the results from the Ising model calculation.
