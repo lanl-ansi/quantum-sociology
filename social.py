@@ -37,11 +37,9 @@ class Ising(object):
     def j(self):
         return self._j
 
-    def solve(self, solver, num_reads, verbose=0):
+    def solve(self, solver, num_reads):
         # solve the embedded Ising model
         embedded_results = core.solve_ising(solver, self._h0, self._j_emb, num_reads=num_reads)
-        if verbose:
-            print embedded_results
         return embedded_results
 
 class Embedding(object):

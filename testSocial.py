@@ -38,11 +38,12 @@ def fig1C():
     net.friend(B,E)
     return net
 
-def solve(net, emb):
-    res = net.solve(solver, emb, s=.5, num_reads=1000, verbose=0)
-
+def solve(net, emb, verbose=0):
     print
     print 'net.j:', net.j()
+
+    res = net.solve(solver, emb, s=.5, num_reads=1000, verbose=verbose)
+
     print 'res.results:'
     for r in res.results():
         print ' ', r
@@ -63,7 +64,7 @@ solve(net, emb)
 # change the network values without changing the topology,
 # and therefore the embedding
 net.friend(A,B)
-solve(net, emb)
+solve(net, emb, verbose=0)
 
 net = fig1B()
 emb = social.Embedding(solver, net, verbose=0)
