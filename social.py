@@ -3,9 +3,9 @@
 Reference: Computing global structural balance in large-scale signed social networks, by Giuseppe Facchetti, et. al.
 """
 
-import dwave_sapi2.util as util
-import dwave_sapi2.embedding as embedding
-import dwave_sapi2.core as core
+import dwave_sapi2.util as dw_util
+import dwave_sapi2.embedding as dw_embedding
+import dwave_sapi2.core as dw_core
 
 def _all_equal(vals):
     """ Returns True if all values are equal """
@@ -39,15 +39,15 @@ class Ising(object):
 
     def solve(self, solver, num_reads):
         # solve the embedded Ising model
-        embedded_results = core.solve_ising(solver, self._h0, self._j_emb, num_reads=num_reads)
+        embedded_results = dw_core.solve_ising(solver, self._h0, self._j_emb, num_reads=num_reads)
         return embedded_results
 
 class Embedding(object):
     def __init__(self, solver, network, verbose=0):
         self._verbose = verbose
         # have D-Wave find an embedding of our network into the Chimera
-        self._A = util.get_hardware_adjacency(solver)
-        self._emb = embedding.find_embedding(network.j(), self._A, verbose=verbose)
+        self._A = dw_util.get_hardware_adjacency(solver)
+        self._emb = dw_embedding.find_embedding(network.j(), self._A, verbose=verbose)
         if verbose:
             print 'embedding:', self._emb
 
@@ -56,7 +56,7 @@ class Embedding(object):
             actually send to the solver
         """
         h = []
-        (h0, j0, jc, new_emb) = embedding.embed_problem(h, j, self._emb, self._A)
+        (h0, j0, jc, new_emb) = dw_embedding.embed_problem(h, j, self._emb, self._A)
         if self._verbose:
             print "h0:", h0
             print "j0:", j0
@@ -75,7 +75,7 @@ class Embedding(object):
         unembedded_results = []
         broken = []
         for sol in embedded_results['solutions']:
-            emb_sol = []
+            unemb_sol = []
             broke = False
             for chain in ising.new_emb():
                 # find all the mappings from physical nodes to this logical node
@@ -84,9 +84,9 @@ class Embedding(object):
                 _chain_all_equals = _all_equal(chain_vals)
                 broke |= not _chain_all_equals
                 # append the value solution using the first element of the logical values
-                emb_sol.append(chain_vals[0] if _chain_all_equals else 0)
+                unemb_sol.append(chain_vals[0] if _chain_all_equals else 0)
             broken.append(broke)
-            unembedded_results.append(emb_sol)
+            unembedded_results.append(unemb_sol)
 
          # pack it up into a solution object that does a bit of post-processing on the solution
         return Solution(embedded_results, unembedded_results, broken, ising)
