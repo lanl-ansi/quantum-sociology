@@ -19,12 +19,12 @@ class Network(object):
     def friend(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be a friend. """
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self.__setEdgeWeight(n1, n2, -1)
+        self._set_edge_weight(n1, n2, -1)
 
     def enemy(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be an enemy. """
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self.__setEdgeWeight(n1, n2, 1)
+        self._set_edge_weight(n1, n2, 1)
 
     def J(self):
         """ Return the edge weights of the social network. """
@@ -69,17 +69,17 @@ class Network(object):
             print ans
 
         # convert the solution back into the original, un-embedded, problem
-        res, broken = self.__unembedSolution(ans['solutions'], new_emb)
+        res, broken = self._unembed_solution(ans['solutions'], new_emb)
 
         # pack it up into a solution object that does a bit of post-processing on the solution
         return Solution(ans, res, broken, self.j)
 
-    def __setEdgeWeight(self, n1, n2, w):
+    def _set_edge_weight(self, n1, n2, w):
         self.maxNode = max(self.maxNode, n1, n2)
         edg = (min(n1,n2), max(n1,n2))
         self.j[edg] = w
 
-    def __unembedSolution(self, sols, emb):
+    def _unembed_solution(self, sols, emb):
         reses = []
         broken = []
         for sol in sols:
@@ -107,24 +107,24 @@ class Solution(object):
     def __init__(self, ans, res, broken, j):
         self.ans = ans
         self.j = j
-        self.res = [ {'energy': e, 'sJs:': self.__sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self.__delta(s, j),
+        self.res = [ {'energy': e, 'sJs:': self._sJs(s, j), 'spins': s, 'num_occ': n, 'delta': self._delta(s, j),
                       'broken': b}
                      for e, s, n, b in zip(ans['energies'], res, ans['num_occurrences'], broken) ]
 
     def results(self):
         return self.res
 
-    def rawResults(self):
+    def raw_results(self):
         return self.ans
 
-    def __delta(self, s, j):
-        sjs = self.__sJs(s, j)
+    def _delta(self, s, j):
+        sjs = self._sJs(s, j)
         m = len(j)
         # the plus sign is due to Fracchetti et.al. minimizing -s^Js, while we change the sign of J and minimize s^Js
         # also, I think m is defined incorrectly in Fracchetti et.al.
         return .5 * (m + sjs)
 
-    def __sJs(self, s, j):
+    def _sJs(self, s, j):
         sum = 0
         for nodes in j:
             sum += j[nodes] * s[nodes[0]] * s[nodes[1]]
