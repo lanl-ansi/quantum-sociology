@@ -54,6 +54,9 @@ if True:
     solver = conn.get_solver("c4-sw_sample")
 else:
     token = os.environ['DWAVE_TOKEN']
+    print token
+    os.environ['no_proxy'] = 'localhost'
+    #print os.environ
     conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
     solver = conn.get_solver("DW2X")
 
