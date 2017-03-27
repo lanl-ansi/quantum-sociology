@@ -16,27 +16,51 @@ def edge_color(e):
 def edge_colors(grph):
     return [edge_color(d) for (n1,n2,d) in grph.edges(data=True)]
 
-terrorFile = "syria.json"
+def node_color(n):
+    if 'weight' in n:
+        if n['weight'] < 0:
+            return 'r'
+        elif n['weight'] > 0:
+            return 'b'
+        else:
+            return 'y'
+    return 'g'
 
-data = tg.st.getData(terrorFile)
-groups, links = tg.st.extract(data)
-graphs = tg.create_graphs_by_date(groups, links)
+def node_colors(grph):
+    return [node_color(d) for (n,d) in grph.nodes(data=True)]
 
-date, grph = graphs[-1]
-pos = tg.nx.spring_layout(grph, iterations=1000)
 
-grph = tg.nx.Graph()
-for (date, grphPartial) in graphs:
+def plot(date, grph, title=None, pos=None, save=False):
     plt.figure(figsize=(12, 12))
-    grph = tg.nx.compose(grph, grphPartial)
+    if pos is None:
+        pos = tg.nx.spring_layout(grph, iterations=1000)
 
     tg.nx.draw_networkx(grph, pos=pos, node_size=2500, node_shape='o', alpha=0.6,
-                   labels=make_labels(grph),
-                     edge_color=edge_colors(grph), width=2.0)
-
-    plt.xlim(-0.05,1.05)
-    plt.ylim(-0.05,1.05)
+                        labels=make_labels(grph),
+                        node_color=node_colors(grph),
+                        edge_color=edge_colors(grph), width=2.0)
+    plt.xlim(-0.05, 1.05)
+    plt.ylim(-0.05, 1.05)
     plt.axis('off')
-    plt.title(date)
-    #plt.savefig('syria_graph_{}.png'.format(date))
+    if title is not None:
+        plt.title(title)
+    if save:
+        plt.savefig('syria_graph_{}.png'.format(date))
     plt.show()
+    return pos
+
+
+if __name__ == '__main__':
+    terrorFile = "syria.json"
+
+    data = tg.st.getData(terrorFile)
+    groups, links = tg.st.extract(data)
+    graphs = tg.create_graphs_by_date(groups, links)
+
+    date, grph = graphs[-1]
+    pos = tg.nx.spring_layout(grph, iterations=1000)
+
+    grph = tg.nx.Graph()
+    for (date, grphPartial) in graphs:
+        grph = tg.nx.compose(grph, grphPartial)
+        plot(date, grph, pos=pos, title=date)
