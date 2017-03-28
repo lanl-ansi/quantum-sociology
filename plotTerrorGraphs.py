@@ -47,6 +47,7 @@ def plot(date, grph, title=None, pos=None, save=False):
     if save:
         plt.savefig('syria_graph_{}.png'.format(date))
     plt.show()
+    plt.close()
     return pos
 
 

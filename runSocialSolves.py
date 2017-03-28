@@ -152,12 +152,13 @@ if __name__ == '__main__':
         # use the fully connected total graph to set the embedding
         # from groups to dwave nodes
         grph = graphs[-1]
-        pos = nx.spring_layout(grph, iterations=1000)
+        pos = nx.spring_layout(grph, iterations=10000)
+        #pos = nx.random_layout(grph)
 
         for grph in graphs:
             delta = grph.graph['delta']
             date = grph.graph['date']
-            pos = ptg.plot(date, grph, pos=pos, title='{} (delta = {})'.format(date, delta), save=save_plot)
+            ptg.plot(date, grph, pos=pos, title='{} (delta = {})'.format(date, delta), save=save_plot)
 
     terrorFile = "syria.json"
 
@@ -168,4 +169,6 @@ if __name__ == '__main__':
     stanford_dwave.solve_graphs()
 
     plot_deltas(stanford_dwave.graphs)
+    if save_plot:
+        plt.ion()
     plot(stanford_dwave.graphs)
