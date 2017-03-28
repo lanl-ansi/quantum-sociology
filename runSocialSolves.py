@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 import dwave_sapi2.local as local
 import dwave_sapi2.remote as remote
 import os
@@ -21,6 +23,7 @@ class StanfordDwave(object):
         self._make_embedding()
 
     def _compose_graphs(self):
+        # also strips off the date from the self.graphs tuples
         comp_graph = nx.Graph()
         graphs = []
         for (date, grph) in self.graphs:
@@ -123,6 +126,28 @@ if __name__ == '__main__':
         conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
         solver = conn.get_solver("DW2X")
 
+    def plot_deltas(graphs):
+        deltas = []
+        dates = []
+        for grph in graphs[:-1]:
+            delta = grph.graph['delta']
+            date = grph.graph['date']
+            deltas.append(delta)
+            dates.append(date)
+
+        # make the x axis just the indices
+        dn = range(len(dates))
+
+        plt.figure()
+        plt.plot(dn, deltas)
+        xtickVals = dn[::10] + dn[-1:]
+        xtickLabels = dates[::10] + dates[-1:]
+        plt.xticks(xtickVals, xtickLabels, rotation='vertical')
+        plt.grid()
+        #plt.margins(0.2)
+        plt.subplots_adjust(bottom=0.2)
+        plt.show()
+
     def plot(graphs):
         # use the fully connected total graph to set the embedding
         # from groups to dwave nodes
@@ -142,4 +167,5 @@ if __name__ == '__main__':
 
     stanford_dwave.solve_graphs()
 
+    plot_deltas(stanford_dwave.graphs)
     plot(stanford_dwave.graphs)
