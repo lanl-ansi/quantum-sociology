@@ -10,7 +10,7 @@ import terrorGraphs as tg
 import plotTerrorGraphs as ptg
 
 use_dwave = False
-save_plot = False
+save_plot = True
 
 class StanfordDwave(object):
 
@@ -148,12 +148,18 @@ if __name__ == '__main__':
         plt.subplots_adjust(bottom=0.2)
         plt.show()
 
+    def save(graphs):
+         for grph in graphs:
+            delta = grph.graph['delta']
+            date = grph.graph['date']
+            nx.write_graphml(grph, path='syria_graph_{}.graphml'.format(date), prettyprint=True)
+
     def plot(graphs):
         # use the fully connected total graph to set the embedding
         # from groups to dwave nodes
         grph = graphs[-1]
-        pos = nx.spring_layout(grph, iterations=10000)
-        #pos = nx.random_layout(grph)
+        pos = nx.spring_layout(grph, weight=None, iterations=1000)
+        #pos = nx.spectral_layout(grph)
 
         for grph in graphs:
             delta = grph.graph['delta']
@@ -171,4 +177,5 @@ if __name__ == '__main__':
     plot_deltas(stanford_dwave.graphs)
     if save_plot:
         plt.ion()
+    save(stanford_dwave.graphs)
     plot(stanford_dwave.graphs)
