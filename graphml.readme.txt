@@ -1,0 +1,4 @@
+node['weight'] is in {-1,1} for nodes with solution
+edge['type'] == 'riv' is enemy, others friends
+graph['delta'] is balance/frustration
+graph['date'] is date
