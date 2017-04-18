@@ -48,12 +48,12 @@ def solve(net):
         print ' ', r
 
 
-if True:
+if False:
     conn = local.local_connection
     solver = conn.get_solver("c4-sw_sample")
 else:
-    token = os.environ['DWAVE_TOKEN']
-    conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
+    #token = os.environ['DWAVE_TOKEN']
+    conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-ef4910eda497d2341b7e1ad13c4402bdfcfeb0e2')
     solver = conn.get_solver("DW2X")
 
 net = fig1A4()
