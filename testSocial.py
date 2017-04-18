@@ -38,29 +38,46 @@ def fig1C():
     net.friend(B,E)
     return net
 
-def solve(net):
-    res = net.solve(solver, s=.5, num_reads=1000, verbose=0)
-
+def solve(net, emb, verbose=0):
     print
-    print 'net.J:', net.J()
+    print 'net.j:', net.j()
+
+    res = net.solve(solver, emb, s=.5, num_reads=1000, verbose=verbose)
+
     print 'res.results:'
     for r in res.results():
         print ' ', r
 
 
-if False:
+if True:
     conn = local.local_connection
     solver = conn.get_solver("c4-sw_sample")
 else:
-    #token = os.environ['DWAVE_TOKEN']
-    conn = remote.RemoteConnection('https://localhost:10443/sapi', 'LANL-ef4910eda497d2341b7e1ad13c4402bdfcfeb0e2')
+    token = os.environ['DWAVE_TOKEN']
+    print token
+    os.environ['no_proxy'] = 'localhost'
+    #print os.environ
+    conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
     solver = conn.get_solver("DW2X")
 
 net = fig1A4()
-solve(net)
+emb = social.Embedding(solver, net, verbose=0)
+solve(net, emb)
+
+# change the network values without changing the topology,
+# and therefore the embedding
+net.friend(A,B)
+solve(net, emb, verbose=0)
+
+# change the network values without changing the topology,
+# and therefore the embedding
+net.friend(B,C)
+solve(net, emb, verbose=0)
 
 net = fig1B()
-solve(net)
+emb = social.Embedding(solver, net, verbose=0)
+solve(net, emb)
 
 net = fig1C()
-solve(net)
+# using same topology as figure 1B
+solve(net, emb)
