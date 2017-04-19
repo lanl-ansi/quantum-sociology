@@ -1,5 +1,6 @@
 import json
 
+_allowedTypes = {'all','riv','aff'}
 
 def getData(file):
     with open(file) as data_file:
@@ -17,7 +18,10 @@ def _simpleLink(l):
 
 def extract(data):
     groups = [ _simpleGroup(g['Group']) for g in data['groups']]
-    links = [ _simpleLink(l['Link']) for l in data['links']]
+    links = []
+    for l in data['links']:
+        if l['Link']['type'] in _allowedTypes:
+            links.append(_simpleLink(l['Link']))
     return groups, links
 
 

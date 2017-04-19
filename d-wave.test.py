@@ -16,11 +16,15 @@ A = util.get_hardware_adjacency(solver)
 #A = util.get_chimera_adjacency(1,1,4)
 
 S_size = 3
-S = {}
+#S = {}
+# A list should work as well as a dictionary.
+# Only required to be an iterable specifying pairs of nodes.
+S=[]
 
 for i in range(S_size):
     for j in range(S_size):
-        S[(i,j)] = 1
+#        S[(i,j)] = 1
+        S.append((i,j))
 
 print S
 

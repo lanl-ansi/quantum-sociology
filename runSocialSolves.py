@@ -16,6 +16,7 @@ class StanfordDwave(object):
 
     def __init__(self, solver, groups, links):
         self._enemyTypes = {'riv'}
+        self._friendTypes ={'all','aff'}
         self.solver = solver
         self.graphs = tg.create_graphs_by_date(groups, links)
         self._compose_graphs()
@@ -42,7 +43,7 @@ class StanfordDwave(object):
     def _add_link(self, net, n1, n2, type):
         if type in self._enemyTypes:
             net.enemy(n1, n2)
-        else:
+        elif type in self._friendTypes:
             net.friend(n1, n2)
 
     def _make_groups_to_dwave_nodes(self):
