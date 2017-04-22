@@ -153,7 +153,7 @@ if __name__ == '__main__':
          for grph in graphs:
             delta = grph.graph['delta']
             date = grph.graph['date']
-            nx.write_graphml(grph, path='syria_graph_{}.graphml'.format(date), prettyprint=True)
+            nx.write_graphml(grph, path='results/results-iraq/iraq_graph_{}.graphml'.format(date), prettyprint=True)
 
     def plot(graphs):
         # use the fully connected total graph to set the embedding
@@ -167,7 +167,7 @@ if __name__ == '__main__':
             date = grph.graph['date']
             ptg.plot(date, grph, pos=pos, title='{} (delta = {})'.format(date, delta), save=save_plot)
 
-    terrorFile = "syria.json"
+    terrorFile = "iraq.json"
 
     groups, links = tg.extract_data_json(terrorFile)
 

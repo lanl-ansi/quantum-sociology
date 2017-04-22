@@ -6,6 +6,7 @@ Reference: Computing global structural balance in large-scale signed social netw
 import dwave_sapi2.util as dw_util
 import dwave_sapi2.embedding as dw_embedding
 import dwave_sapi2.core as dw_core
+import settings
 
 def _all_equal(vals):
     """ Returns True if all values are equal """
@@ -47,7 +48,8 @@ class Embedding(object):
         self._verbose = verbose
         # have D-Wave find an embedding of our network into the Chimera
         self._A = dw_util.get_hardware_adjacency(solver)
-        self._emb = dw_embedding.find_embedding(network.j(), self._A, verbose=verbose)
+        self._emb = dw_embedding.find_embedding(network.j(), self._A, \
+                                                verbose=verbose, timeout=settings.EMBEDDING_TIMEOUT)
         if verbose:
             print 'embedding:', self._emb
 
