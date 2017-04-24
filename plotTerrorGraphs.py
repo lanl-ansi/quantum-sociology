@@ -30,7 +30,7 @@ def node_colors(grph):
     return [node_color(d) for (n,d) in grph.nodes(data=True)]
 
 
-def plot(date, grph, title=None, pos=None, save=False):
+def plot(date, grph, tag, title=None, pos=None, save=False):
     plt.figure(figsize=(12, 12))
     if pos is None:
         pos = tg.nx.spring_layout(grph, iterations=1000)
@@ -45,7 +45,7 @@ def plot(date, grph, title=None, pos=None, save=False):
     if title is not None:
         plt.title(title)
     if save:
-        plt.savefig('syria_graph_{}.png'.format(date))
+        plt.savefig(tag+'_graph_{}.png'.format(date))
     plt.show()
     plt.close()
     return pos

@@ -9,7 +9,9 @@ import social
 import terrorGraphs as tg
 import plotTerrorGraphs as ptg
 
-use_dwave = False
+import settings
+
+use_dwave = True
 save_plot = True
 
 class StanfordDwave(object):
@@ -120,7 +122,8 @@ if __name__ == '__main__':
         conn = local.local_connection
         solver = conn.get_solver("c4-sw_sample")
     else:
-        token = os.environ['DWAVE_TOKEN']
+        #token = os.environ['DWAVE_TOKEN']
+        token = settings.DWAVE_TOKEN
         print token
         os.environ['no_proxy'] = 'localhost'
         #print os.environ
@@ -165,9 +168,10 @@ if __name__ == '__main__':
         for grph in graphs:
             delta = grph.graph['delta']
             date = grph.graph['date']
-            ptg.plot(date, grph, pos=pos, title='{} (delta = {})'.format(date, delta), save=save_plot)
+            ptg.plot(date, grph, plotTag, pos=pos, title='{} (delta = {})'.format(date, delta), save=save_plot)
 
     terrorFile = "iraq.json"
+    plotTag = 'iraq'
 
     groups, links = tg.extract_data_json(terrorFile)
 
