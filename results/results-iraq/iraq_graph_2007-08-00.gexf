@@ -1,0 +1,421 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf version="1.1" xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gexf.net/1.1draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
+  <graph defaultedgetype="undirected" mode="static">
+    <attributes class="edge" mode="static">
+      <attribute id="3" title="date" type="string" />
+      <attribute id="4" title="group1" type="string" />
+      <attribute id="5" title="group2" type="string" />
+    </attributes>
+    <attributes class="node" mode="static">
+      <attribute id="0" title="shortname" type="string" />
+      <attribute id="1" title="weight" type="integer" />
+      <attribute id="2" title="name" type="string" />
+    </attributes>
+    <nodes>
+      <node id="591" label="591">
+        <attvalues>
+          <attvalue for="0" value="PKK" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Kurdistan Workers Party" />
+        </attvalues>
+      </node>
+      <node id="593" label="593">
+        <attvalues>
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Jund al-Islam" />
+        </attvalues>
+      </node>
+      <node id="595" label="595">
+        <attvalues>
+          <attvalue for="2" value="Tawhid" />
+        </attvalues>
+      </node>
+      <node id="573" label="573">
+        <attvalues>
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Kurdish Hamas" />
+        </attvalues>
+      </node>
+      <node id="629" label="629">
+        <attvalues>
+          <attvalue for="0" value="KSS" />
+          <attvalue for="2" value="Kata’ib Sayyid al-Shuhada" />
+        </attvalues>
+      </node>
+      <node id="609" label="609">
+        <attvalues>
+          <attvalue for="0" value="AI Syria" />
+          <attvalue for="2" value="Ansar al-Islam Syria" />
+        </attvalues>
+      </node>
+      <node id="575" label="575">
+        <attvalues>
+          <attvalue for="2" value="Al-Nahda" />
+        </attvalues>
+      </node>
+      <node id="585" label="585">
+        <attvalues>
+          <attvalue for="0" value="IUMK" />
+          <attvalue for="2" value="The Islamic Unity Movement of Kurdistan" />
+        </attvalues>
+      </node>
+      <node id="395" label="395">
+        <attvalues>
+          <attvalue for="0" value="AQKB" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Al Qaeda Kurdish Battalions" />
+        </attvalues>
+      </node>
+      <node id="627" label="627">
+        <attvalues>
+          <attvalue for="0" value="KIA" />
+          <attvalue for="2" value="Kata'ib al-Imam Ali" />
+        </attvalues>
+      </node>
+      <node id="81" label="81">
+        <attvalues>
+          <attvalue for="0" value="Hezbollah" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Hezbollah" />
+        </attvalues>
+      </node>
+      <node id="583" label="583">
+        <attvalues>
+          <attvalue for="0" value="KIG" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="The Kurdistan Islamic Group" />
+        </attvalues>
+      </node>
+      <node id="25" label="25">
+        <attvalues>
+          <attvalue for="0" value="IMK" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Islamic Movement of Kurdistan" />
+        </attvalues>
+      </node>
+      <node id="27" label="27">
+        <attvalues>
+          <attvalue for="2" value="Al-Tawhid Islamic Front" />
+        </attvalues>
+      </node>
+      <node id="21" label="21">
+        <attvalues>
+          <attvalue for="0" value="AQ" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Al Qaeda" />
+        </attvalues>
+      </node>
+      <node id="29" label="29">
+        <attvalues>
+          <attvalue for="0" value="Hamas Iraq" />
+          <attvalue for="2" value="Hamas Iraq" />
+        </attvalues>
+      </node>
+      <node id="1" label="1">
+        <attvalues>
+          <attvalue for="0" value="IS" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="The Islamic State" />
+        </attvalues>
+      </node>
+      <node id="3" label="3">
+        <attvalues>
+          <attvalue for="0" value="MA" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Mujahideen Army" />
+        </attvalues>
+      </node>
+      <node id="5" label="5">
+        <attvalues>
+          <attvalue for="0" value="IAI" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Islamic Army in Iraq" />
+        </attvalues>
+      </node>
+      <node id="9" label="9">
+        <attvalues>
+          <attvalue for="0" value="1920s RB" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="1920s Revolution Brigades" />
+        </attvalues>
+      </node>
+      <node id="361" label="361">
+        <attvalues>
+          <attvalue for="0" value="KH" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Kata'ib Hezbollah" />
+        </attvalues>
+      </node>
+      <node id="587" label="587">
+        <attvalues>
+          <attvalue for="0" value="PUK" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Patriotic Union of Kurdistan" />
+        </attvalues>
+      </node>
+      <node id="619" label="619">
+        <attvalues>
+          <attvalue for="0" value="HN" />
+          <attvalue for="2" value="Harakat al-Nujaba" />
+        </attvalues>
+      </node>
+      <node id="143" label="143">
+        <attvalues>
+          <attvalue for="0" value="AAH" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Asa'ib Ahl al-Haq" />
+        </attvalues>
+      </node>
+      <node id="577" label="577">
+        <attvalues>
+          <attvalue for="2" value="The Reformist Group" />
+        </attvalues>
+      </node>
+      <node id="589" label="589">
+        <attvalues>
+          <attvalue for="0" value="KDP" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Kurdish Democratic Party" />
+        </attvalues>
+      </node>
+      <node id="75" label="75">
+        <attvalues>
+          <attvalue for="0" value="JRTN " />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Jaysh Rijal al-Tariqa al-Naqshbandia (JRTN) " />
+        </attvalues>
+      </node>
+      <node id="11" label="11">
+        <attvalues>
+          <attvalue for="0" value="AS Sharia" />
+          <attvalue for="2" value="Ansar al-Sunna Shariah" />
+        </attvalues>
+      </node>
+      <node id="13" label="13">
+        <attvalues>
+          <attvalue for="0" value="AI" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Ansar al-Islam" />
+        </attvalues>
+      </node>
+      <node id="31" label="31">
+        <attvalues>
+          <attvalue for="0" value="SSU" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Second Soran Unit" />
+        </attvalues>
+      </node>
+      <node id="405" label="405">
+        <attvalues>
+          <attvalue for="0" value="SCIRI/ISCI" />
+          <attvalue for="1" value="-1" />
+          <attvalue for="2" value="Supreme Council for Islamic Revolution in Iraq" />
+        </attvalues>
+      </node>
+      <node id="435" label="435">
+        <attvalues>
+          <attvalue for="0" value="Badr Org" />
+          <attvalue for="2" value="Badr Organization of Reconstruction and Development" />
+        </attvalues>
+      </node>
+      <node id="57" label="57">
+        <attvalues>
+          <attvalue for="0" value="Mahdi" />
+          <attvalue for="1" value="1" />
+          <attvalue for="2" value="Mahdi Army" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="591" target="587" type="all">
+        <attvalues>
+          <attvalue for="3" value="1995-00-00" />
+          <attvalue for="4" value="587" />
+          <attvalue for="5" value="591" />
+        </attvalues>
+      </edge>
+      <edge id="1" source="591" target="589" type="riv">
+        <attvalues>
+          <attvalue for="3" value="1994-09-00" />
+          <attvalue for="4" value="589" />
+          <attvalue for="5" value="591" />
+        </attvalues>
+      </edge>
+      <edge id="2" source="593" target="25" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2001-10-00" />
+          <attvalue for="4" value="593" />
+          <attvalue for="5" value="25" />
+        </attvalues>
+      </edge>
+      <edge id="3" source="593" target="21" type="all">
+        <attvalues>
+          <attvalue for="3" value="2001-09-00" />
+          <attvalue for="4" value="593" />
+          <attvalue for="5" value="21" />
+        </attvalues>
+      </edge>
+      <edge id="4" source="593" target="583" type="all">
+        <attvalues>
+          <attvalue for="3" value="2001-11-00" />
+          <attvalue for="4" value="593" />
+          <attvalue for="5" value="583" />
+        </attvalues>
+      </edge>
+      <edge id="5" source="573" target="25" type="riv">
+        <attvalues>
+          <attvalue for="3" value="1998-10-00" />
+          <attvalue for="4" value="25" />
+          <attvalue for="5" value="573" />
+        </attvalues>
+      </edge>
+      <edge id="6" source="395" target="1" type="all">
+        <attvalues>
+          <attvalue for="3" value="2007-05-00" />
+          <attvalue for="4" value="395" />
+          <attvalue for="5" value="1" />
+        </attvalues>
+      </edge>
+      <edge id="7" source="395" target="587" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-05-00" />
+          <attvalue for="4" value="587" />
+          <attvalue for="5" value="395" />
+        </attvalues>
+      </edge>
+      <edge id="8" source="395" target="21" type="aff">
+        <attvalues>
+          <attvalue for="3" value="2007-03-00" />
+          <attvalue for="4" value="21" />
+          <attvalue for="5" value="395" />
+        </attvalues>
+      </edge>
+      <edge id="9" source="395" target="589" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-05-00" />
+          <attvalue for="4" value="589" />
+          <attvalue for="5" value="395" />
+        </attvalues>
+      </edge>
+      <edge id="10" source="81" target="57" type="all">
+        <attvalues>
+          <attvalue for="3" value="2003-04-01" />
+          <attvalue for="4" value="81" />
+          <attvalue for="5" value="57" />
+        </attvalues>
+      </edge>
+      <edge id="11" source="25" target="587" type="all">
+        <attvalues>
+          <attvalue for="3" value="1997-00-00" />
+          <attvalue for="4" value="587" />
+          <attvalue for="5" value="25" />
+        </attvalues>
+      </edge>
+      <edge id="12" source="25" target="31" type="riv">
+        <attvalues>
+          <attvalue for="3" value="1998-05-00" />
+          <attvalue for="4" value="25" />
+          <attvalue for="5" value="31" />
+        </attvalues>
+      </edge>
+      <edge id="13" source="25" target="589" type="all">
+        <attvalues>
+          <attvalue for="3" value="1994-06-00" />
+          <attvalue for="4" value="589" />
+          <attvalue for="5" value="25" />
+        </attvalues>
+      </edge>
+      <edge id="14" source="21" target="1" type="aff">
+        <attvalues>
+          <attvalue for="3" value="2004-10-00" />
+          <attvalue for="4" value="1" />
+          <attvalue for="5" value="21" />
+        </attvalues>
+      </edge>
+      <edge id="15" source="21" target="13" type="all">
+        <attvalues>
+          <attvalue for="3" value="2002-01-01" />
+          <attvalue for="4" value="13" />
+          <attvalue for="5" value="21" />
+        </attvalues>
+      </edge>
+      <edge id="16" source="1" target="13" type="all">
+        <attvalues>
+          <attvalue for="3" value="2003-00-00" />
+          <attvalue for="4" value="1" />
+          <attvalue for="5" value="13" />
+        </attvalues>
+      </edge>
+      <edge id="17" source="1" target="57" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-06-08" />
+          <attvalue for="4" value="57" />
+          <attvalue for="5" value="1" />
+        </attvalues>
+      </edge>
+      <edge id="18" source="1" target="75" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-00-00" />
+          <attvalue for="4" value="1" />
+          <attvalue for="5" value="75" />
+        </attvalues>
+      </edge>
+      <edge id="19" source="1" target="5" type="all">
+        <attvalues>
+          <attvalue for="3" value="2004-00-00" />
+          <attvalue for="4" value="1" />
+          <attvalue for="5" value="5" />
+        </attvalues>
+      </edge>
+      <edge id="20" source="1" target="9" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-02-00" />
+          <attvalue for="4" value="1" />
+          <attvalue for="5" value="9" />
+        </attvalues>
+      </edge>
+      <edge id="21" source="3" target="5" type="all">
+        <attvalues>
+          <attvalue for="3" value="2005-00-00" />
+          <attvalue for="4" value="5" />
+          <attvalue for="5" value="3" />
+        </attvalues>
+      </edge>
+      <edge id="22" source="361" target="143" type="all">
+        <attvalues>
+          <attvalue for="3" value="2007-00-00" />
+          <attvalue for="4" value="361" />
+          <attvalue for="5" value="143" />
+        </attvalues>
+      </edge>
+      <edge id="23" source="587" target="13" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2004-02-01" />
+          <attvalue for="4" value="587" />
+          <attvalue for="5" value="13" />
+        </attvalues>
+      </edge>
+      <edge id="24" source="587" target="589" type="all">
+        <attvalues>
+          <attvalue for="3" value="1998-00-00" />
+          <attvalue for="4" value="589" />
+          <attvalue for="5" value="587" />
+        </attvalues>
+      </edge>
+      <edge id="25" source="589" target="13" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2004-02-01" />
+          <attvalue for="4" value="589" />
+          <attvalue for="5" value="13" />
+        </attvalues>
+      </edge>
+      <edge id="26" source="405" target="57" type="riv">
+        <attvalues>
+          <attvalue for="3" value="2007-08-00" />
+          <attvalue for="4" value="405" />
+          <attvalue for="5" value="57" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

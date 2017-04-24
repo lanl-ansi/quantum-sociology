@@ -16,14 +16,14 @@ def _sJs(s, j):
     sum = 0
     for nodes in j:
         sum += j[nodes] * s[nodes[0]] * s[nodes[1]]
-    return sum
+    # Full matrix is twice the edge sum.
+    return 2*sum
 
 def _delta(s, j):
     sjs = _sJs(s, j)
     m = len(j)
     # the plus sign is due to Fracchetti et.al. minimizing -s^Js, while we change the sign of j and minimize s^Js
-    # also, I think m is defined incorrectly in Fracchetti et.al.
-    return .5 * (m + sjs)
+    return 0.5*(m + .5*sjs)
 
 class Ising(object):
     def __init__(self, h0, j_emb, new_emb, j):

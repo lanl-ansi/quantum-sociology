@@ -11,8 +11,8 @@ import plotTerrorGraphs as ptg
 
 import settings
 
-use_dwave = True
-save_plot = True
+use_dwave = False
+save_plot = False
 
 class StanfordDwave(object):
 
@@ -156,7 +156,7 @@ if __name__ == '__main__':
          for grph in graphs:
             delta = grph.graph['delta']
             date = grph.graph['date']
-            nx.write_graphml(grph, path='results/results-iraq/iraq_graph_{}.graphml'.format(date), prettyprint=True)
+#            nx.write_graphml(grph, path='results/results-iraq/iraq_graph_{}.graphml'.format(date), prettyprint=True)
 
     def plot(graphs):
         # use the fully connected total graph to set the embedding
