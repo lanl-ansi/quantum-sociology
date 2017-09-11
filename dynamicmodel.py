@@ -167,7 +167,7 @@ if __name__=='__main__':
         solver = conn.get_solver("c4-sw_sample")
     else:
         # token = os.environ['DWAVE_TOKEN']
-        token = settings.DWAVE_TOKEN
+        token = settings.DWAVE_TOKEN_RMR
         print token
         os.environ['no_proxy'] = 'localhost'
         # print os.environ
