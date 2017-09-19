@@ -33,7 +33,8 @@ def node_colors(grph):
 def plot(date, grph, tag, title=None, pos=None, save=False):
     plt.figure(figsize=(12, 12))
     if pos is None:
-        pos = tg.nx.spring_layout(grph, iterations=1000)
+        #pos = tg.nx.spring_layout(grph, iterations=1000)
+        pos = tg.nx.circular_layout(grph, scale=0.5, center=(.5,.5))
 
     tg.nx.draw_networkx(grph, pos=pos, node_size=2500, node_shape='o', alpha=0.6,
                         labels=make_labels(grph),
