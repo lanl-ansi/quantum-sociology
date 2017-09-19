@@ -109,6 +109,7 @@ class SocialNetSolver:
         nviol = 0
         eviols = []
         for e in self.graph.edges(data=True):
+            # RMR The following line is suspect, ignored edges (e.g. 'spl') seem to have no 'weight' attribute
             ew = e[2]['weight']
             n1 = e[0]
             n2 = e[1]
