@@ -149,6 +149,12 @@ class Network(object):
         edg = (min(n1,n2), max(n1,n2))
         self._j[edg] = w
 
+    def remove_edge(self, n1, n2):
+        self._max_node = max(self._max_node, n1, n2)
+        edg = (min(n1,n2), max(n1,n2))
+        if edg in self._j:
+            del self._j[edg]
+
     def copy(self):
         cls = self.__class__
         new = cls.__new__(cls)

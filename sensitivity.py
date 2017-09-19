@@ -10,7 +10,8 @@ import social
 
 import os
 import sys
-import random
+
+import plotTerrorGraphs as ptg
 
 import networkx as nx
 
@@ -75,7 +76,8 @@ class SocialNetSolver:
             e[2]['weight'] = 0
             n0 = self.groups_to_dwave_nodes[e[0]]
             n1 = self.groups_to_dwave_nodes[e[1]]
-            self.network.set_edge_weight(n0, n1, 0)
+            self.network.remove_edge(n0, n1)
+            self.graph.remove_edge(e[0], e[1])
 
     def _make_groups_to_dwave_nodes(self):
         # use the fully connected total graph to set the mapping
@@ -121,6 +123,14 @@ class SocialNetSolver:
             set_weight(self.graph.node[n1], s1)
             set_weight(self.graph.node[n2], s2)
 
+    def get_name(self, n):
+        node_data = self.graph.nodes(data=True)
+        dwave_node = self.groups_to_dwave_nodes[n]
+        name = node_data[dwave_node][1]['name']
+        return name
+
+def plot(solver, **kwargs):
+    return ptg.plot('xxx', solver.graph, 'yyy', **kwargs)
 
 if __name__=='__main__':
 
@@ -150,14 +160,20 @@ if __name__=='__main__':
     social_solver.solve_graph()
     delta = social_solver.delta
     print(input+' initial problem solved, delta = '+str(delta))
+    plot_it = False
+    if plot_it:
+        pos = plot(social_solver)
 
     nodes = social_solver.get_nodes()
     for n in nodes:
+        #social_solver_copy = social_solver
         social_solver_copy = social_solver.copy()
         social_solver_copy.remove_node(n)
         social_solver_copy.solve_graph()
         delta = social_solver_copy.delta
-        print(input + ' node ' + n + ' removed: problem solved, delta = ' + str(delta))
+        print(input + ' node ' + social_solver_copy.get_name(n) + ' removed: problem solved, delta = ' + str(delta))
+        if plot_it:
+            plot(social_solver_copy, pos=pos)
 
 
 
