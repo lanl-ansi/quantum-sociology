@@ -106,12 +106,17 @@ class Network(object):
     def friend(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be a friend. """
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self._set_edge_weight(n1, n2, -1)
+        self.set_edge_weight(n1, n2, -1)
 
     def enemy(self, n1, n2):
         """ Set the edge from nodes n1 to n2 to be an enemy. """
         # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
-        self._set_edge_weight(n1, n2, 1)
+        self.set_edge_weight(n1, n2, 1)
+
+    def unused(self, n1, n2):
+        """ Set the edge from nodes n1 to n2 to be unused. """
+        # using opposite sign convention from Facchetti, et.al. since they minimize -s^Js instead of s^Js
+        self.set_edge_weight(n1, n2, 0)
 
     def j(self):
         """ Return the edge weights of the social network. """
@@ -139,10 +144,17 @@ class Network(object):
         return emb.unembed_solution(embedded_results, ising)
 
 
-    def _set_edge_weight(self, n1, n2, w):
+    def set_edge_weight(self, n1, n2, w):
         self._max_node = max(self._max_node, n1, n2)
         edg = (min(n1,n2), max(n1,n2))
         self._j[edg] = w
+
+    def copy(self):
+        cls = self.__class__
+        new = cls.__new__(cls)
+        new._j = self._j.copy()
+        new._max_node = self._max_node
+        return new
 
 class Solution(object):
     """ Solution is used to package up and post-process the results from the Ising model calculation.

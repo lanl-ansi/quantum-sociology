@@ -56,7 +56,7 @@ class SocialNetSolver:
             n2 = self.groups_to_dwave_nodes[target]
             ew = edge[2]['weight']
 
-            self.network._set_edge_weight(n1,n2,ew)
+            self.network.set_edge_weight(n1, n2, ew)
 
     def _make_groups_to_dwave_nodes(self):
         # use the fully connected total graph to set the mapping
