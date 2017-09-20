@@ -76,7 +76,7 @@ class SocialNetSolver:
     def remove_node(self, n):
 
         def node_in_edge(n, e):
-            return e[0] == n or e[1] == nrm 
+            return e[0] == n or e[1] == nrm
 
         edges_containing_n = [e for e in self.graph.edges(data=True) if node_in_edge(n, e)]
         for e in edges_containing_n:
