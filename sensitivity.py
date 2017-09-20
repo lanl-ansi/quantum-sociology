@@ -10,6 +10,9 @@ import social
 
 import os
 import sys
+import glob
+
+import json
 
 import plotTerrorGraphs as ptg
 
@@ -19,6 +22,10 @@ enemyTypes = {'riv'}
 friendTypes = {'all', 'aff'}
 enemyValue = 1
 friendValue = -1
+
+class BrokenError(Exception):
+    def __str__(self):
+        return 'Solution has no results where "broken"==False'
 
 class SocialNetSolver:
 
@@ -69,7 +76,7 @@ class SocialNetSolver:
     def remove_node(self, n):
 
         def node_in_edge(n, e):
-            return e[0] == n or e[1] == n
+            return e[0] == n or e[1] == nrm 
 
         edges_containing_n = [e for e in self.graph.edges(data=True) if node_in_edge(n, e)]
         for e in edges_containing_n:
@@ -95,8 +102,9 @@ class SocialNetSolver:
         if results_not_broken:
             res = results_not_broken[0]
         else:
-            print('Error: solution has no results where "broken"==False')
-            sys.exit(1)
+            #print('Error: solution has no results where "broken"==False')
+            #sys.exit(1)
+            raise BrokenError()
 
         self.set_node_weights(res)
 
@@ -132,15 +140,58 @@ class SocialNetSolver:
 def plot(solver, **kwargs):
     return ptg.plot('xxx', solver.graph, 'yyy', **kwargs)
 
+
+def sensitivity(social_solver, input, plot_it=False, verbose=False, pos=None):
+    results = {}
+    nodes = social_solver.get_nodes()
+    for n in nodes:
+        # social_solver_copy = social_solver
+        social_solver_copy = social_solver.copy()
+        name = social_solver_copy.get_name(n)
+        if verbose:
+            print('solving without ' + name)
+        social_solver_copy.remove_node(n)
+        try:
+            social_solver_copy.solve_graph()
+            delta = social_solver_copy.delta
+            if verbose:
+                print(input + ' node ' + name + ' removed: problem solved, delta = ' + str(delta))
+            if plot_it:
+                plot(social_solver_copy, pos=pos)
+        except BrokenError as be:
+            delta = -999
+            print(input + ' node ' + name + ' removed: ' + str(be))
+        results[name] = delta
+    return results
+
+def do_runs(inputs, plot_it=False, verbose=False):
+    results = {}
+
+    for input in inputs:
+
+        results_input = results[input] = {}
+
+        # Create a SocialNetSolver and obtain an initial solution.
+        social_solver = SocialNetSolver.from_input(solver, input)
+        social_solver.solve_graph()
+        delta = social_solver.delta
+
+        results_input['__initial__'] = delta
+
+        print(input + ' initial problem solved, delta = ' + str(delta))
+
+        if plot_it:
+            pos = plot(social_solver)
+
+        results_sensitivity = sensitivity(social_solver, input, plot_it=plot_it, verbose=verbose)
+        results_input.update(results_sensitivity)
+
+    return results
+
+
 if __name__=='__main__':
 
     use_dwave = True
-    input = 'syria_graph_2016-10-00.graphml'
-    pfactor = 1
-    pmodel = 'imbalance' # from {imbalance,violation,constant'}
-    pconst = 0.5
-    write_graphs = True
-    outputdir = 'results/results-dynamic'
 
     # Use the D Wave machine or local solver.
     if not use_dwave:
@@ -155,25 +206,16 @@ if __name__=='__main__':
         conn = remote.RemoteConnection('https://localhost:10443/sapi', token)
         solver = conn.get_solver("DW2X")
 
-    # Create a SocialNetSolver and obtain an initial solution.
-    social_solver = SocialNetSolver.from_input(solver,input)
-    social_solver.solve_graph()
-    delta = social_solver.delta
-    print(input+' initial problem solved, delta = '+str(delta))
-    plot_it = False
-    if plot_it:
-        pos = plot(social_solver)
+    #input = 'syria_graph_2016-10-00.graphml'
+    input_globs = 'syria_graph_20*.graphml'
+    inputs = glob.glob(input_globs)
 
-    nodes = social_solver.get_nodes()
-    for n in nodes:
-        #social_solver_copy = social_solver
-        social_solver_copy = social_solver.copy()
-        social_solver_copy.remove_node(n)
-        social_solver_copy.solve_graph()
-        delta = social_solver_copy.delta
-        print(input + ' node ' + social_solver_copy.get_name(n) + ' removed: problem solved, delta = ' + str(delta))
-        if plot_it:
-            plot(social_solver_copy, pos=pos)
+    outputdir = 'results/results-sensitivity'
+
+    results = do_runs(inputs,verbose=True)
+
+    with open(outputdir+'/results.json', 'w') as f:
+        json.dump(results, f, sort_keys=True, indent=4)
 
 
 
